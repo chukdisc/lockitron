@@ -120,13 +120,15 @@ module Lockitron
       require_user
       params[:role] ||= 'guest' 
       raise InvalidArgument, "Phone or email required" unless params[:email] or params[:phone]
+      raise InvalidArgument, "User required" unless params[:user]
+      user = params[:user]
       if params[:start]
         params[:start] = params[:start].to_i
       else
         params[:start] = Time.now.to_i
       end
       params[:expiration] = params[:expiration].to_i if params[:expiration]
-      @user.post "locks/#{@uuid}/edit", params
+      user.post "locks/#{@uuid}/edit", params
     end
 
     private

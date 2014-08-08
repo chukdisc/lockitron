@@ -116,6 +116,19 @@ module Lockitron
       @user.post "locks/#{@uuid}/add", params
     end
 
+    def update(params={})
+      require_user
+      params[:role] ||= 'guest' 
+      raise InvalidArgument, "Phone or email required" unless params[:email] or params[:phone]
+      if params[:start]
+        params[:start] = params[:start].to_i
+      else
+        params[:start] = Time.now.to_i
+      end
+      params[:expiration] = params[:expiration].to_i if params[:expiration]
+      @user.post "locks/#{@uuid}/edit", params
+    end
+
     private
     def require_user
       raise InvalidArgument, "Not in user context" unless @user
